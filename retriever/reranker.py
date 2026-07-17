@@ -71,12 +71,9 @@ class Reranker:
 
         sim = q @ p.T
 
-        top5 = np.sort(
-            sim,
-            axis=1
-        )[:, -5:]
-
-        return float(top5.mean())
+        # True MaxSim: best patch for each query token
+        max_per_token = sim.max(axis=1)
+        return float(max_per_token.mean())
 
     def get_weights(
         self,
@@ -95,11 +92,6 @@ class Reranker:
 
         return 0.30, 0.30, 0.40
 
-    def select_top_patches(self, patches, top_n=40):
-
-        norms = np.linalg.norm(patches, axis=1)
-        top_idx = np.argsort(norms)[-top_n:]
-        return patches[top_idx]
 
     def compute_rrf(self, results, k=60):
 
@@ -173,7 +165,6 @@ class Reranker:
             )
 
             patches = self.load_patches(idx)
-            patches = self.select_top_patches(patches)
 
             s_token = self.maxsim(
                 encoded_query["full_tokens"],
@@ -208,3 +199,5 @@ class Reranker:
         )
 
         return results[:top_k]
+
+        

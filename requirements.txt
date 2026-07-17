@@ -1,12 +1,14 @@
 torch==2.5.1
 torchvision==0.20.1
 
-transformers>=4.57.0
-accelerate>=1.0.0
+transformers==4.57.1
+accelerate==1.14.0
+huggingface-hub==0.36.0
+tokenizers==0.22.1
+safetensors==0.6.2
+
 sentencepiece
 protobuf
-accelerate==0.34.2
-tokenizers==0.20.3
 
 numpy==1.26.4
 pillow==10.4.0
@@ -18,6 +20,3 @@ spacy==3.8.2
 click>=8.1.0
 
 matplotlib==3.9.2
-
-huggingface-hub==0.24.7
-safetensors==0.4.5

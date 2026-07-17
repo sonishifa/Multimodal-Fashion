@@ -3,6 +3,7 @@ Build image embeddings and FAISS index.
 """
 
 import os
+from config import * 
 import numpy as np
 from tqdm import tqdm
 

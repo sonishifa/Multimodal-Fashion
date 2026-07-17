@@ -3,18 +3,13 @@ Visual evaluation.
 Displays Weighted vs RRF retrieval results.
 """
 import os
-
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
+from config import * 
 import faiss
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 
 from transformers import AutoProcessor, AutoModel
-
-from config import *
 
 from retriever.query_decomposer import decompose_query
 from retriever.query_encoder import QueryEncoder
@@ -132,11 +127,10 @@ image_paths = np.load(
     IMAGE_PATHS_FILE,
     allow_pickle=True
 )
-LOCAL_IMAGE_DIR = "/Users/shifasoni/Documents/Multimodal-Fashion/data/images"
 
 image_paths = np.array([
     os.path.join(
-        LOCAL_IMAGE_DIR,
+        IMAGE_DIR,
         os.path.basename(p)
     )
     for p in image_paths

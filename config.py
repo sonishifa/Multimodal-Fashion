@@ -6,6 +6,18 @@ All paths, model settings, and retrieval hyperparameters are defined here.
 """
 
 import os
+
+# ==========================================================
+# Environment guards
+# MUST be set before torch / faiss / transformers are imported
+# anywhere in the process — including in this file, below.
+# ==========================================================
+
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+os.environ["OMP_NUM_THREADS"]      = "1"
+os.environ["MKL_NUM_THREADS"]      = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 import torch
 
 # ==========================================================
@@ -14,21 +26,16 @@ import torch
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# Raw images
 IMAGE_DIR = os.path.join(PROJECT_ROOT, "data", "images")
 
-# Output root
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "data")
 
-# Embeddings
-EMBEDDING_DIR      = os.path.join(OUTPUT_DIR, "embeddings")
-PATCH_DIR          = os.path.join(EMBEDDING_DIR, "patches")
+EMBEDDING_DIR = os.path.join(OUTPUT_DIR, "embeddings")
+PATCH_DIR     = os.path.join(EMBEDDING_DIR, "patches")
 
-# Files
 GLOBAL_EMBEDDINGS_FILE = os.path.join(EMBEDDING_DIR, "global_embeddings.npy")
 IMAGE_PATHS_FILE       = os.path.join(EMBEDDING_DIR, "image_paths.npy")
 
-# FAISS
 FAISS_DIR        = os.path.join(OUTPUT_DIR, "index")
 FAISS_INDEX_PATH = os.path.join(FAISS_DIR, "faiss_index.bin")
 
@@ -52,11 +59,11 @@ NUM_PATCHES   = 196
 # Retriever
 # ==========================================================
 
-TOP_N        = 50      # FAISS candidate pool
-TOP_K        = 5       # Final results returned
-TOP_K_MAXSIM = 5       # Top-k patches per query token in MaxSim
-RRF_K        = 60      # RRF smoothing constant
-TOP_PATCHES  = 40      # Informative patches selected per image
+TOP_N        = 50
+TOP_K        = 5
+TOP_K_MAXSIM = 5
+RRF_K        = 60
+TOP_PATCHES  = 40
 
 # ==========================================================
 # Misc

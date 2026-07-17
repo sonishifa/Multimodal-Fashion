@@ -3,6 +3,7 @@ Retrieve images using the hybrid retriever.
 """
 
 import os
+from config import * 
 import faiss
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,11 +15,8 @@ from transformers import (
 
 from PIL import Image
 
-from config import *
-
-from retriever.query_decomposer import (
-    decompose_query
-)
+from retriever import reranker
+from retriever.query_decomposer import  decompose_query
 
 from retriever.query_encoder import (
     QueryEncoder
@@ -112,6 +110,14 @@ def main():
         allow_pickle=True
     )
 
+    image_paths = np.array([
+        os.path.join(
+            IMAGE_DIR,
+            os.path.basename(p)
+        )
+        for p in image_paths
+    ])
+
     global_embeddings = np.load(
         GLOBAL_EMBEDDINGS_FILE
     )
@@ -137,30 +143,40 @@ def main():
         if query.lower() == "exit":
             break
 
-        query_dict = decompose_query(
-            query
-        )
+        print("[1] Decomposing query...")
+        query_dict = {
+            "full_query": query,
+            "sub_queries": [query]
+        }
+        print(query_dict)
+        print("✓ Query decomposed")
 
-        encoded_query = encoder.encode_query(
-            query_dict
-        )
+        print("[2] Encoding query...")
+        encoded_query = encoder.encode_query(query_dict)
+        print("Encoded full embedding:", encoded_query["full_embedding"].shape)
+        print("Encoded full tokens:", encoded_query["full_tokens"].shape)
+        print("Number of sub embeddings:", len(encoded_query["sub_embeddings"]))
 
+        print("✓ Query encoded")
+
+        print("[3] FAISS retrieval...")
         candidates = generator.retrieve(
             encoded_query["full_embedding"],
             TOP_N
-        )
+)
+        print(f"✓ Retrieved {len(candidates)} candidates")
 
+        print("[4] Reranking...")
         results = reranker.rerank(
             candidates,
             encoded_query,
             query_dict,
             TOP_K
         )
+        print("✓ Reranking finished")
 
-        display_results(
-            results
-        )
-
+        print("[5] Displaying...")
+        display_results(results)
 
 if __name__ == "__main__":
     main()
