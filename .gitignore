@@ -1,0 +1,15 @@
+# Dataset
+data/images/
+
+# Large embeddings
+data/embeddings/patches/
+
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.venv/
+
+# Mac
+.DS_Store
